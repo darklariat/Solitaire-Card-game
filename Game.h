@@ -35,6 +35,8 @@ private:
     int moveCount;
 
 public:
+    int get_moveCount() { return moveCount; }
+
     void shuffleDeck()
     {
         const char* suits[] = { hearts, diamonds, clubs, spades };
@@ -142,6 +144,17 @@ public:
             }
             cout << endl;  
         }
+    }
+
+    void printInstructions()
+    {
+        cout << hue:: black_on_light_green << " \n " << hue::bright_white_on_light_blue << " Enter Z" << hue::black_on_light_green << " to undo a previous move\n";
+        cout << hue::black_on_light_green << " " << hue::bright_white_on_light_blue << " Enter M" << hue::black_on_light_green << " followed by source, destination and number of ";
+        cout << "cards to move that many cards \n to the destination. Possible moves: \n";
+        cout << "\t\t\t\t" << hue::bright_white << "Source: w(wastepile), cn(column number n)" << hue:: black << "\n";
+        cout << "\t\t\t\t" << hue::bright_white << "Destinations : f(foundation pile), cn" << hue:: black;
+        cout << hue::black_on_light_green << " \n " << hue::bright_white_on_light_blue << " Enter S" << hue::black_on_light_green << " to move a card from stockpile to wastepile.\n\n";
+
     }
 
     //Display the game state

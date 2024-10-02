@@ -68,6 +68,12 @@ int main()
         game.display();
         
         string command;
+
+        if (game.get_moveCount() % 3 == 0 || game.get_moveCount() == 1)
+        {
+            game.printInstructions();
+        }
+
         cout << hue:: bright_white_on_purple << "Enter command: ";
         cout << hue::black_on_light_green;
         getline(cin, command);
