@@ -104,7 +104,6 @@ int main()
         if (a == 57)
             i = 9;
 
-
         if (!game.commands(c, arr[1], arr[2], i))
         {
             cout << "\n Invalid Command \n";

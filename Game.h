@@ -167,8 +167,8 @@ public:
         }
         cout << endl << endl;
 
-        cout << "  Move Num: " << moveCount << endl;
-        cout << "  Stockpile[" << stockpile.countElem()<< "]" << "       Wastepile[" << wastepile.countElem() << "]" << "              Foundation piles" << endl; 
+        cout << "  Move Num: " << moveCount << "\t\t\t" << hue::bright_white_on_light_blue << "Possible moves: " << calculateMoves() << hue::black_on_light_green;
+        cout << "\n  Stockpile[" << stockpile.countElem()<< "]" << "       Wastepile[" << wastepile.countElem() << "]" << "              Foundation piles" << endl; 
         cout << "  ";
         stockpile.display();
         cout << "               ";
@@ -244,12 +244,23 @@ public:
             it1 = tableau[source - 1].begin();
             for (int i = 0; i < count - 1; i++)
             {
-                it1++;
+                if (it1.curr-> data != nullptr)
+                {
+                    it1++;
+                }
+                else
+                {
+                    return false;
+                }
             }
 
             if (it1.curr != nullptr)
             {
                 s = it1.curr->data;
+                if (s == nullptr)
+                {
+                    return false;
+                }
             }
             else
             {
@@ -267,6 +278,10 @@ public:
         else
         {
             it1 = wastepile.list.begin();
+            if (it1.curr->data == nullptr)
+            {
+                return false;
+            }
             s = it1.curr->data;
         }
 
@@ -280,6 +295,10 @@ public:
         }
         else
         {
+            if (s == nullptr)
+            {
+                return false;
+            }
             const char* suit = s->suit;
             if(suit == hearts)
                 it2 = foundation[0].list.begin();
@@ -322,7 +341,7 @@ public:
         //comparing ranks and colors
         if (dest != 0)
         {
-            if (srank < drank)
+            if (srank < drank && (srank + 1 == drank))
             {
                 if (s->color == "red" && d->color == "black")
                 {
@@ -775,5 +794,220 @@ public:
             }
         }
         return true;
+    }
+
+    int checkpossiblemws()
+    {
+        int moves = 0;
+        Dlist<Card*>::Iterator it1;
+        Card* s;
+        Dlist<Card*>::Iterator it2;
+        Card* w;
+
+        it1 = stockpile.list.begin();
+        s = *it1;
+        it2 = wastepile.list.begin();
+        w = *it2;
+
+        //wastepile to tableau
+        if (w != nullptr)
+        {
+            for (int i = 0; it2 != wastepile.list.end(); it2++)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    int check = 0;
+                    Card* s = it2.curr->data;
+                    Card* d = tableau[j].head-> next -> data;
+                    // assigning value to ranks for comparison
+                    string ranks[13] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+                    int srank = 0, drank = 0;
+                    for (int i = 0; i < 13; i++)
+                    {
+                        if (s->rank == ranks[i])
+                        {
+                            srank = i;
+                        }
+                        if (d != nullptr)
+                        {
+                            if (d->rank == ranks[i])
+                            {
+                                drank = i;
+                            }
+                        }
+                        else
+                        {
+                            moves++;
+                            check = 1;
+                        }
+                    }
+
+                    if (srank < drank && (srank + 1 == drank) && check != 1)
+                    {
+                        moves++;
+                    }
+                }
+            }
+        }
+
+        // checking stockpile to tableau
+        if (s != nullptr)
+        {
+            for (int i = 0; it1 != stockpile.list.end(); it1++)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    int check = 0;
+                    Card* s = it1.curr->data;
+                    Card* d = tableau[j].head-> next -> data;
+                    // assigning value to ranks for comparison
+                    string ranks[13] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+                    int srank = 0, drank = 0;
+                    for (int i = 0; i < 13; i++)
+                    {
+                        if (s->rank == ranks[i])
+                        {
+                            srank = i;
+                        }
+                        if (d != nullptr)
+                        {
+                            if (d->rank == ranks[i])
+                            {
+                                drank = i;
+                            }
+                        }
+                        else
+                        {
+                            moves++;
+                            check = 1;
+                        }
+                    }
+
+                    if (srank < drank && (srank + 1 == drank) && check != 1)
+                    {
+                        moves++;
+                    }
+                }
+            }
+        }
+
+        // wastepile to foundation
+        if (w != nullptr)
+        {
+            for (int i = 0; it2 != wastepile.list.end(); it2++)
+            {
+                Card* s = it2.curr->data;
+                Card* d;
+                const char* suit = s->suit;
+                if (suit == hearts)
+                    it2 = foundation[0].list.begin();
+                else if (suit == diamonds)
+                    it2 = foundation[1].list.begin();
+                else if (suit == clubs)
+                    it2 = foundation[2].list.begin();
+                else if (suit == spades)
+                    it2 = foundation[3].list.begin();
+                d = it2.curr->data;
+                    
+                // assigning value to ranks for comparison
+                string ranks[13] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+                int srank = 0, drank = 0;
+                for (int i = 0; i < 13; i++)
+                {
+                    if (s->rank == ranks[i])
+                    {
+                        srank = i;
+                    }
+                    if (d != nullptr)
+                    {
+                        if (d->rank == ranks[i])
+                        {
+                            drank = i;
+                        }
+                    }
+                    if (d->rank == "?")
+                    {
+                        drank = -1;
+                    }
+                }
+
+                if (srank > drank && (drank + 1 == srank))
+                {
+                    moves++;
+                }
+            }
+        }
+
+        // stockpile to foundation
+        if (s != nullptr)
+        {
+            for (int i = 0; it1 != stockpile.list.end(); it1++)
+            {
+                Card* s = it1.curr->data;
+                Card* d;
+                const char* suit = s->suit;
+                if (suit == hearts)
+                    it1 = foundation[0].list.begin();
+                else if (suit == diamonds)
+                    it1 = foundation[1].list.begin();
+                else if (suit == clubs)
+                    it1 = foundation[2].list.begin();
+                else if (suit == spades)
+                    it1 = foundation[3].list.begin();
+                d = it1.curr->data;
+
+                // assigning value to ranks for comparison
+                string ranks[13] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+                int srank = 0, drank = 0;
+                for (int i = 0; i < 13; i++)
+                {
+                    if (s->rank == ranks[i])
+                    {
+                        srank = i;
+                    }
+                    if (d != nullptr)
+                    {
+                        if (d->rank == ranks[i])
+                        {
+                            drank = i;
+                        }
+                    }
+                    if (d->rank == "?")
+                    {
+                        drank = -1;
+                    }
+                }
+
+                if (srank > drank && (drank + 1 == srank))
+                {
+                    moves++;
+                }
+            }
+        }
+        return moves;
+    }
+
+    int calculateMoves()
+    {
+        int moveCount = 0;
+        // tableau to tableau moves
+        for (int i = 1; i <= 7; i++)
+        {
+            for (int j = 1; j <= 7; j++)
+            {
+                for (int k = 1; k < 10; k++)
+                {
+                    if (checkRankColor(i, j, k) && j != i)
+                    {
+                        moveCount++;
+                    }
+                }
+            }
+        }
+        
+        //waste & stockpile to foundation and tableau moves
+        moveCount += checkpossiblemws();
+        
+        return moveCount;   
     }
 };

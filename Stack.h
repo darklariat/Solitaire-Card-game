@@ -20,10 +20,6 @@ public:
         return list.DeleteStart();
     }
 
-   /* Card* retLast() {
-        return *list.peekTail();
-    }*/
-
     bool isEmpty() 
     {
         return list.isEmpty();
